@@ -1,0 +1,12 @@
+advancements
+functions
+loot_tables
+predicates
+recipes
+structures
+tags
+tags/blocks
+tags/entity_types
+tags/fluids
+tags/functions
+tags/items
