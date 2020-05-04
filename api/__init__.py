@@ -8,3 +8,5 @@ def compileCode (inputfile: str, outputfolder: str):
     # create a datapack compiler
     cp = Compiler(os.path.join(*inputfile.split('/')),
     os.path.join(*outputfolder.split('/')))
+    # compile the code
+    cp.comp()
