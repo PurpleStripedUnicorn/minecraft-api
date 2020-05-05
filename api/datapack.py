@@ -27,13 +27,14 @@ class Compiler:
         ''' find the namespace definition in the upper most file in the input
         stack, throws an error if none is given '''
         ln = 0
-        for line in open(self.inputfile).readlines():
+        for linefull in open(self.inputfile).readlines():
             ln += 1
+            line = removeWhitespace(linefull)
             if line.startswith('namespace '):
                 if not re.match(r'^namespace [A-Za-z0-9_]+$', line):
                     raise CompileError('(ln. {})Invalid namespace definition'
                     .format(ln))
-                return line[:-1].split(' ')[1]
+                return line.split(' ')[1]
         raise CompileError('No namespace definition found')
 
     def createFolders (self):
@@ -86,25 +87,31 @@ class Compiler:
         # keep track of the line number and the file currently being read
         self.ln = 0
         self.currentinput = inputfile
-        for line in open(inputfile).readlines():
+        for linefull in open(inputfile).readlines():
+            line = removeWhitespace(linefull)
             self.ln += 1
             # check if line is not a comment or empty
-            if self.isempty(line[:-1]):
+            if self.isempty(line):
                 continue
             # check for context remover command '}'
-            if self.iscontextremover(line[:-1]):
+            if self.iscontextremover(line):
                 self.contextStack.pop(-1)
                 continue
             # check if the command exists
             # if it doesn't, it is regarded as a vanilla minecraft command
             found = False
             for cmd in commands:
-                if cmd.matchpattern(self, line[:-1]):
+                if cmd.matchpattern(self, line):
                     if found:
                         raise CompileError(err_format(self.currentinput,
                         self.ln, 'Line matches multiple commands'))
-                    cmd(self, line[:-1])
+                    cmd(self, line)
                     found = True
             if not found:
                 with open(self.currentOutputfile, 'w') as f:
                     f.write(removeWhitespace(line) + '\n')
+
+    def raiseError (self, txt='Unknown error'):
+        if self.ln and self.currentinput:
+            raise CompileError(err_format(self.currentinput, self.ln, txt))
+        raise CompileError('COMPILER ERROR: {}'.format(txt))
