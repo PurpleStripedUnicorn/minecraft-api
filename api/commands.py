@@ -26,17 +26,25 @@ def cmdDef (cp, line):
     cp.contextStack.append(Context(os.path.join(cp.mainfolder, 'functions',
     fname + '.mcfunction')))
 
-@commands('if', r'^.+\{ *$')
-def cmdIf (cp, line):
-    ''' `if` command, is a shorthand for using a function and the vanilla
-    `execute` command '''
+def cmdExecute (cp, line):
+    ''' format for all commands associated with the vanilla `execute` command,
+    e.g. `if`, `unless`, `as` '''
     # remove whitespace and '{' from the statement
     statement = removeWhitespace(removeWhitespace(line)[:-1])
     # generate a random function name
     fname = '0x{:08x}'.format(random.randint(0, 16 ** 8 - 1))
+    # write execute command to current output file
     with open(cp.currentOutputfile, 'a') as f:
-        f.write('execute {} run function {}:{}'.format(statement, cp.namespace,
+        f.write('execute {} run function {}:{}\n'.format(statement, cp.namespace,
         fname))
     # create new context for the function file
     cp.contextStack.append(Context(os.path.join(cp.mainfolder, 'functions',
     fname + '.mcfunction')))
+
+# `execute` associated commands:
+
+commands('if', r'^.+\{ *$')(cmdExecute)
+commands('unless', r'^.+\{ *$')(cmdExecute)
+commands('at', r'^.+\{ *$')(cmdExecute)
+commands('as', r'^.+\{ *$')(cmdExecute)
+commands('positioned', r'^.+\{ *$')(cmdExecute)
