@@ -21,6 +21,8 @@ def cmdNamespace (cp, line):
 def cmdDef (cp, line):
     ''' function definition '''
     fname = removeWhitespace(line.split(' ')[1].split('{')[0])
+    if fname.startswith('0x'):
+        cp.raiseError('function names cannot start with "0x"')
     cp.contextStack.append(Context(os.path.join(cp.mainfolder, 'functions',
     fname + '.mcfunction')))
 
