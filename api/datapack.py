@@ -3,7 +3,7 @@ import os
 import re
 import shutil
 
-from api.commands import commands, Command
+from api.commands import commands
 from api.context import Context
 from api.errors import CompileError, err_format
 from api.tools import removeWhitespace
