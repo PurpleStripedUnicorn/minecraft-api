@@ -4,7 +4,7 @@ import random
 
 from api.command import Command, CommandContainer
 from api.context import Context
-from api.errors import CompileError, err_format
+from api.errors import CompileError
 from api.tools import removeWhitespace
 
 commands = CommandContainer()
